@@ -1,0 +1,86 @@
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { motion } from "framer-motion";
+
+const menuItems = [
+  { id: 1, name: "Jollof Rice & Chicken", price: 15 },
+  { id: 2, name: "Suya & Fries", price: 12 },
+  { id: 3, name: "Egusi Soup & Fufu", price: 18 },
+  { id: 4, name: "Plantain & Beans", price: 10 },
+];
+
+export default function FayzCuisineApp() {
+  const [cart, setCart] = useState([]);
+  const [name, setName] = useState("");
+  const [address, setAddress] = useState("");
+
+  const addToCart = (item) => {
+    setCart([...cart, item]);
+  };
+
+  const removeFromCart = (index) => {
+    setCart(cart.filter((_, i) => i !== index));
+  };
+
+  const placeOrder = () => {
+    if (!name || !address) {
+      alert("Please enter your name and address to place an order.");
+      return;
+    }
+    alert(`Order placed for ${name}! Your food will be delivered to ${address}.`);
+    setCart([]);
+    setName("");
+    setAddress("");
+  };
+
+  return (
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">FayzCuisine Menu</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {menuItems.map((item) => (
+          <Card key={item.id} className="p-4 shadow-lg rounded-2xl">
+            <CardContent>
+              <h2 className="text-xl font-semibold">{item.name}</h2>
+              <p className="text-gray-600">${item.price}</p>
+              <Button className="mt-2" onClick={() => addToCart(item)}>
+                Add to Cart
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+      <h2 className="text-xl font-bold mt-6">Your Cart</h2>
+      {cart.length === 0 ? <p>No items in cart.</p> : (
+        <ul className="mt-2">
+          {cart.map((item, index) => (
+            <li key={index} className="flex justify-between p-2 border-b">
+              {item.name} - ${item.price}
+              <Button variant="destructive" onClick={() => removeFromCart(index)}>
+                Remove
+              </Button>
+            </li>
+          ))}
+        </ul>
+      )}
+      <div className="mt-6">
+        <Input
+          placeholder="Your Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="mb-2"
+        />
+        <Input
+          placeholder="Delivery Address"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          className="mb-2"
+        />
+        <Button onClick={placeOrder} className="w-full mt-2">
+          Place Order
+        </Button>
+      </div>
+    </div>
+  );
+}
